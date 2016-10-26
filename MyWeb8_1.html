@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <!-- Latest compiled and minified CSS -->
+<!--        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
+        
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        
+        <script type="text/javascript">
+          //  function send_data_to_AWS(){
+            //url : "http://xcxcxc033-env.elasticbeanstalk.com/",
+            $(document).ready(function(){  
+              $("#btn1").click(function(){
+                    $.ajax({
+ 
+                    url : "http://cs-server.usc.edu:20198/inxdexx.php",
+                     
+                    data: {
+                        address:"1248 w adams blvd",	
+                        city:"LA",
+                        state:"CA",
+                        degree:"us"
+                    },
+                    type:'GET',
+                    async:false,
+                    success: function(msg){
+                        alert(msg);
+                            var jasonfile = JSON.parse(msg);
+                  
+                            var getmsg = print_json(jasonfile);
+                            document.getElementById("lastpart").innerHTML = getmsg;
+                            SetTableColor();
+                           
+                        },
+                        error:function(msg){
+                            alert(msg);
+                     //       console.log(msg);
+                     //   document.write("xxxxxxxxxxx---false---xxxxxxxxxxxxxx");
+                    }
+                });
+                });  
+             });   
+     
+     //      
+        </script>
+        
+        <button id = "btn1" type="submit" class="btn btn-primary" ><span class="glyphicon glyphicon-search"></span>&nbsp;Search</button>
+    </body>
+
+
+</html>

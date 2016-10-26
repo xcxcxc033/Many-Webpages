@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <!-- Latest compiled and minified CSS -->
+<!--        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
+        
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        
+        <script src="http://openlayers.org/api/OpenLayers.js"></script>
+        <script src="http://openweathermap.org/js/OWM.OpenLayers.1.3.4.js" ></script>
+        <script id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js"></script>
+        
+        <script type="text/javascript">
+ 
+            
+            var FB_picture;
+            var Discription;
+            var Tile_discpt;
+          
+            
+            
+                window.fbAsyncInit = function() {
+                FB.init({
+                  appId      : '189595138050215',
+                  xfbml      : true,
+                  version    : 'v2.5'
+                });
+              }; 
+
+            window.onload=window.onresize = function(){
+
+                if($("#third").width()!=null){
+                if($("#third").width()<647){
+                    $("#third").css({"background-color": "none"});
+                    var d = document.getElementById("third");
+
+                    d.style.backgroundColor = null;
+                }else{
+                
+             
+                    document.getElementById("third").style.backgroundColor = "black";
+                }
+                }
+
+            }
+            
+         //   if($("#test").click = function(){  };
+            
+              function facebookbtn(){
+                
+                  FB.ui({
+                      method: 'feed',
+                      link: 'https://forecast.io',
+                      redirect_uri: 'http://www-scf.usc.edu/~cxi923/mydehw8.html',
+                      picture: FB_picture,
+                      caption: 'WEATHER INFOMATION FROM FORCAST.IO',
+                      description :Discription,
+                      name:Tile_discpt,
+                    },function(response){
+                            if(response==null){
+                                 
+                                   alert("Not Posted"); 
+
+                                }else{
+                                    alert("Posted Successfully");
+                  }});
+                  
+                }
+
+            $(document).ready(function(){ 
+                
+  /*              $(window).resize(function(){
+   //process here
+                alert("resize");
+                if($("#thrid").width<=647){
+                $(this).css({"background-color": "none"});
+            }*/
+                
+                
+              $("#btn1").click(function(){
+                  //$("#test").val()
+                // alert($('input[name="degree"]:checked').val());
+                  if($("#choose_address").val()=="" ||$("#choose_city").val()==""|| $("#choose_state").val()==null){
+                        if($("#choose_address").val()==""){ document.getElementById("streetwarning").innerHTML="Please enter the street address";  }else{document.getElementById("streetwarning").innerHTML="";}
+                        if($("#choose_city").val()==""){ document.getElementById("citywarning").innerHTML="Please Enter the city";  }else{document.getElementById("citywarning").innerHTML="";}
+                        if($("#choose_state").val()==null){ document.getElementById("statewarning").innerHTML="Please select a state";  }else{document.getElementById("statewarning").innerHTML=null;}
+                     //   if(document.getElementById("choose_state").value()==""){ document.getElementById("citywarning").innerHTML="xxxxx";  }
+                    return;
+                  }else{
+                      document.getElementById("statewarning").innerHTML=null;
+                      document.getElementById("citywarning").innerHTML="";
+                      document.getElementById("streetwarning").innerHTML="";
+                  }
+                  
+         
+                  
+                    $.ajax({
+                    type: "GET",
+                    url : "http://xcxcxc033-env.elasticbeanstalk.com/",
+                    //url : "http://xcxcxc033-env.elasticbeanstalk.com/?street_address=Los%20Angeles&city=Los%20Angeles&state=CA&degree=si",
+                    //url:"http://cs-server.usc.edu:20198/index.php",
+                    //url : "index.php",
+                    dataType:'jsonp',
+                    jsonp:'callback',
+
+                    data: {
+                        address:document.getElementById("choose_address").value,	
+                        city:document.getElementById("choose_city").value,
+                        state:document.getElementById("choose_state").value,
+                        degree:$('input[name="degree"]:checked').val()}, //document.getElementByTagName("degree").value
+                        success: function(msg){
+                          
+                           
+                            var getmsg = print_json(msg);
+                            Tile_discpt="Current Wether In "+document.getElementById("choose_city").value+","+document.getElementById("choose_state").value+"";
+                            document.getElementById("lastpart").innerHTML = getmsg;
+                            SetTableColor();
+                            init(msg);
+/*                            alert(msg.daily.data[0].sunriseTime);
+                            alert(msg.daily.data[0].sunsetTime);
+                      */
+                        },
+                        error:function(msg){
+                            alert("false");
+                            alert(msg);
+
+                    }
+                    });
+                  
+                  
+                    }); 
+
+                });   
+            
+
+                function cleanAll(){
+                   // $("#choose_address").val()="";
+                    document.getElementById("choose_address").value = "";
+                    document.getElementById("streetwarning").innerHTML="";
+                    document.getElementById("choose_city").value = "";
+                   // $("#choose_city").val()="";
+                    document.getElementById("citywarning").innerHTML=""; 
+                   // document.getElementById("choose_city").value = "";
+                    
+                    document.getElementById("choose_state").value = "";
+                    
+                    //$("#choose_state").val()=null;
+                    document.getElementById("statewarning").innerHTML="";
+                    document.getElementById("lastpart").innerHTML="";
+                    
+                    document.getElementById("temperature1").checked ="checked";
+                
+                }
+                        
+     
+     //       }
+                    var map;
+                    function init(jsfile) {
+
+                        //Center  ( mercator coordinates )
+                        var lat = jsfile.latitude;
+                        var lon = jsfile.longitude;
+
+                    // if  you use WGS 1984 coordinate you should  convert to mercator
+                    	/*lonlat.transform(
+                    		new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                    		new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
+                    	);*/
+//**********************cloud******************
+                        var lonlat = new OpenLayers.LonLat(lon, lat);
+                        
+                        lonlat.transform(
+                    		new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                    		new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
+                    	);
+                        
+                        var layer_cloud = new OpenLayers.Layer.XYZ(
+                        "clouds",
+                        "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+                        {
+                            isBaseLayer: false,
+                            opacity: 0.7,
+                            sphericalMercator: true
+                        }
+                    );
+
+                    var layer_precipitation = new OpenLayers.Layer.XYZ(
+                        "precipitation",
+                        "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+                        {
+                            isBaseLayer: false,
+                            opacity: 0.7,
+                            sphericalMercator: true
+                        }
+                    );
+//**********************cloud******************
+                        map = new OpenLayers.Map("basicMap");
+
+                        // Create overlays
+                        // map layer OSM
+                        var mapnik = new OpenLayers.Layer.OSM();
+                        // Create station layer
+                        var stations = new OpenLayers.Layer.Vector.OWMStations("Stations");
+                        // Create weather layer 
+                        var city = new OpenLayers.Layer.Vector.OWMWeather("Weather");
+
+                        //connect layers to map
+                        map.addLayers([mapnik, stations, city]);
+
+                        // Add Layer switcher
+                        map.addControl(new OpenLayers.Control.LayerSwitcher());  
+                        map.addLayers([mapnik, layer_precipitation, layer_cloud]);
+
+                        map.setCenter( lonlat, 10 );
+                    }
+            
+            function FirstTxt(jansofile){
+                var txt = "";
+                txt += "<div class = 'col-xs-12 col-sm-6 col-md-6' style='padding-left: 0px; padding-right: 0px;'>";
+                txt += "<div class = 'col-xs-12 col-sm-12 col-md-12' style= 'background-color:#ff7575;padding-top:30px;text-align:center;'>";
+                txt += "<div class = 'col-xs-12 col-sm-6 col-md-6' style='padding-left: 0px; padding-right: 0px;'>";
+                    if(jansofile.currently.icon == "clear-day"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/clear.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/clear.png';
+                    }else if(jansofile.currently.icon == "clear-night"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/clear_night.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/clear_night.png';
+
+                    }else if(jansofile.currently.icon== "rain"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/rain.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/rain.png';
+                    }else if(jansofile.currently.icon== "snow"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/snow.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/snow.png';
+                    }else if(jansofile.currently.icon == "sleet"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/sleet.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/sleet.png';
+                    }else if(jansofile.currently.icon == "wind"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/wind.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/wind.png';
+                    }else if(jansofile.currently.icon == "fog"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/fog.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/fog.png';
+                    }else if(jansofile.currently.icon == "cloudy"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloudy.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/cloudy.png';
+                    }else if(jansofile.currently.icon == "partly-cloudy-day"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloud_day.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/cloud_day.png';
+                    }else if(jansofile.currently.icon == "partly-cloudy-night"){
+                        txt += "<image  style='width:100px;height:100px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png'/>";
+                        FB_picture = 'http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png';
+                    }
+                txt += "</div>";
+                // ************** picture - div -end*********************
+                
+                // ************** under picture - div*********************
+                
+                txt += "<div class = 'col-xs-12 col-sm-6 col-md-6'>";
+                txt += "<h3 style='font-weight:bold;color:white;'>" + jansofile.currently.summary +" in " + document.getElementById("choose_city").value + ", " + document.getElementById("choose_state").value + "</h3>";
+                                                    
+                txt += "<div class = 'row'>";
+                    txt += "<div class = 'col-xs-2 col-sm-2 col-md-2'></div>";
+                var dgre = Math.round(jansofile.currently.temperature);
+                if($('input:radio[name="degree"]:checked').val() == "si"){
+
+                    Discription = jansofile.currently.summary+", "+dgre+"°C";
+                    txt += "<div class = 'col-xs-8 col-sm-8 col-md-8'>";
+                    txt += "<div style='float:left;'>";
+                    txt += "<p style='float:left;'><font color='white' style='font-weight:bold;font-size:80px;'>"+dgre+"</font></p>";
+                    txt += "</div>";
+                    txt += "<div style='float:left;margin-top: 25px;'>";
+                    txt += "<p ><font color='white' style='font-size:15px;'>&#176C</font></p>"; 
+                    txt += "</div>";
+                    txt += "<div style='clear:both'></div>";
+                    txt += "</div>";
+                         
+                   
+                    }else{
+
+                        Discription = jansofile.currently.summary+", "+dgre+"°F";
+                    txt += "<div class = 'col-xs-8 col-sm-8 col-md-8'>";
+                    txt += "<div style='float:left;'>";
+                    txt += "<p style='float:left;'><font color='white' style='font-weight:bold;font-size:80px;'>"+dgre+"</font></p>";
+                    txt += "</div>";
+                    txt += "<div style='float:left;margin-top: 25px;'>";
+                    txt += "<p ><font color='white' style='font-size:15px;'>&#176F</font></p>"; 
+                    txt += "</div>";
+                    txt += "<div style='clear:both'></div>";
+                    txt += "</div>";
+                       
+                    }
+                txt += "<div class = 'col-xs-2 col-sm-2 col-md-2'></div>";
+                txt += "</div>";
+                txt += "<div class='row'>";
+                      txt += "<div style='clear:both'></div>";   
+  // **************************************** temperature ***********************************              
+                
+                    var min = Math.round(jansofile.daily.data[0].temperatureMin);
+                    var max = Math.round(jansofile.daily.data[0].temperatureMax);
+                txt += "<p></p>";
+                txt += "<div class = 'col-xs-9 col-sm-9 col-md-9'>";
+                txt += "<h5><font color='blue'>L:"+min+"&#176</font><font color='black'>|</font><font color='green'>H:" + max + "&#176</font></h5>";
+                txt += "</div>";
+                
+                            txt += "<div id='facebook' class = 'col-xs-3 col-sm-3 col-md-3' style='padding-bottom: 10px;'>";
+                                //txt += "<image style='width:50px;height:50px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/fb_icon.png' />";
+                                txt += "<input type='button' id ='btn_f' onclick='facebookbtn()' class='btn btn-primary' />";
+                            
+                             txt += "</div>";
+                txt += "</div>";
+                txt += "</div>";
+                txt += "</div>";
+                
+                //txt += "<div>";
+                txt +=  "<table id='Table_1' border='0' cellpadding='5' cellspacing='1' style='width:100%'>";
+                            
+                            if((1000*(jansofile.currently.precipIntensity)) >= 0 && (1000*(jansofile.currently.precipIntensity)) < 2){
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;' >Precipitation:</td><td style='width:40%;height: 25px; padding-left: 10px;'>None</td></tr>";
+                                
+                            }else if((1000*(jansofile.currently.precipIntensity)) >= 2 && (1000*(jansofile.currently.precipIntensity)) < 17){
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;' >Precipitation:</td><td style='width:40%;height: 25px; padding-left: 10px;'>Very Light</td></tr>";
+
+                            }else if((1000*(jansofile.currently.precipIntensity)) >= 17 && (1000*(jansofile.currently.precipIntensity)) < 100){
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;' >Precipitation:</td><td style='width:40%;height: 25px; padding-left: 10px;'>Light</td></tr>";
+                                
+                            }else if((1000*(jansofile.currently.precipIntensity)) >= 17 && (1000*(jansofile.currently.precipIntensity)) < 100){
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;' >Precipitation:</td><td style='width:40%;height: 25px; padding-left: 10px;'>Moderate</td></tr>";
+                                
+                            }else if((1000*(jansofile.currently.precipIntensity)) >= 400){
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;' >Precipitation:</td><td style='width:40%;height: 25px; padding-left: 10px;'>Heavy</td></tr>";
+                                
+                            }   
+                            
+                            if($('input:radio[name="degree"]:checked').val() == "si"){
+                            
+                            
+                            var chanceRain = Math.round(100*jansofile.currently.precipIntensity);
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Chance of Rain:</td><td style='width:40%;height: 25px; padding-left: 10px;'>"+ chanceRain +"%</td></tr>";
+                
+                            var windspeed = jansofile.currently.windSpeed;
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Wind Speed:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + windspeed.toFixed(2) + " m/s</td></tr>";
+                            var dewpoint = jansofile.currently.dewPoint;
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Dew Point:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + dewpoint.toFixed(2) + "&#176C</td></tr>";
+                            var humidity = Math.round(jansofile.currently.humidity);
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Humidity:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + humidity + "%</td></tr>";
+                
+                            var visibility = jansofile.currently.visibility;
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Visibility:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + visibility.toFixed(2) + " km</td></tr>";
+                            }else{
+                                
+                            var chanceRain = Math.round(100*jansofile.currently.precipIntensity);
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Chance of Rain:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + chanceRain + "%</td></tr>";
+                
+                            var windspeed = jansofile.currently.windSpeed;
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Wind Speed:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + windspeed.toFixed(2) + " mph</td></tr>";
+                            var dewpoint = jansofile.currently.dewPoint;
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Dew Point:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + dewpoint.toFixed(2) + "&#176F</td></tr>";
+                            var humidity = Math.round(jansofile.currently.humidity);
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Humidity:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + humidity + "%</td></tr>";
+                
+                            var visibility = jansofile.currently.visibility;
+                            txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Visibility:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + visibility.toFixed(2) + " mi</td></tr>";                               
+                                
+                                
+                            }
+                // ************************************** date *****************************************
+               
+                                   /* var now = new Date();
+                                    offset = now.getTimezoneOffset(jansofile.timezone) * 60 * 1000;
+                                yourUnixStamp = jansofile.daily.data[0].sunriseTime - offset; */
+             
+                var date = new Date(1000*jansofile.daily.data[0].sunriseTime); 
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+                            if(minutes < 10){
+                                    minutes = "0"+minutes;
+                                }
+                            if(hours >= 12){                               
+                                hours -= 12;
+                                
+                                if(hours < 10){
+                                    hours = "0"+hours;
+                                }
+                                
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Sunrise:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + hours +":"+ minutes + " PM</td></tr>";
+                            }else{
+                                if(hours < 10){
+                                    hours = "0"+hours;
+                                }
+                                
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Sunrise:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + hours +":"+ minutes + " AM</td></tr>";                              
+                            }
+                
+                             /*       var now = new Date(),
+                                    offset = now.getTimezoneOffset(jansofile.timezone) * 60 * 1000,
+                                yourUnixStamp = jansofile.daily.data[0].sunsetTime + offset;  */             
+                            
+
+                         
+                
+                            var date_1 = new Date(1000*jansofile.daily.data[0].sunsetTime); 
+                            var hours_1 = date_1.getHours();
+                            var minutes_1 = date_1.getMinutes();
+                            if(minutes_1 < 10){
+                                    minutes_1 = "0"+minutes_1;
+                                }
+                            if(hours_1 >= 12){                               
+                                hours_1 -= 12;
+                                if(hours_1 < 10){
+                                    hours_1 = "0"+hours_1;
+                                }
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Sunset:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + hours_1 +":"+ minutes_1 + " PM</td></tr>";
+                            }else{
+                                if(hours_1 < 10){
+                                    hours_1 = "0"+hours_1;
+                                }
+                                txt += "<tr><td style='width:60%;height: 25px; padding-left: 10px;'>Sunset:</td><td style='width:40%;height: 25px; padding-left: 10px;'>" + hours_1 +":"+ minutes_1 + " AM</td></tr>";                              
+                            }
+                            
+                        
+                    txt += "</table>";
+               // txt += "</div>";
+                txt += "</div>";
+// ******************************* under picture - div - end *********************************** 
+                
+// ******************************* table - div *********************************** 
+                    txt += "<div class = 'col-xs-12 col-sm-6 col-md-6' style='padding-left: 0px; padding-right: 0px;'>";
+                        
+                        txt += "<div id='basicMap' class = 'col-xs-12 col-sm-12 col-md-12' style='height:475px;'></div>";
+                    txt += "</div>";
+                
+                
+                    
+                 
+                return txt;
+                
+            }
+            
+            
+            
+            function SecondTxt(jansofile){
+                var txt = "";
+                
+                txt += "<div id='firstTableDiv' class = 'col-xs-12 col-sm-12 col-md-12' style='padding-left: 0px; padding-right: 0px;background-color:white;'>";
+                txt += "<table  frame=above id='Table_1' border='0' cellpadding='5' cellspacing='1' style='width:100%;color:white;font-weight:bold;text-align:center;background-color:SteelBlue;' >";
+                
+                if($('input:radio[name="degree"]:checked').val() == "si"){
+                    txt += "<tr><td style='width:20%; height: 35px;text-align:center;'>Time</td><td style='width:20%;text-align:center;'>Summary</td><td style='width:20%;text-align:center;'>Cloud Cover</td><td style='width:20%;text-align:center;'>Temp(&#176C)</td><td style='width:20%;text-align:center;'>View Details</td></tr>";
+                }else{                   
+                    txt += "<tr><td style='width:20%;height: 35px;text-align:center;'>Time</td><td style='width:20%;text-align:center;'>Summary</td><td style='width:20%;text-align:center;'>Cloud Cover</td><td style='width:20%;text-align:center;'>Temp(&#176F)</td><td style='width:20%;text-align:center;'>View Details</td></tr>";
+                }
+                txt += "<tr style='background-color:white;'><td style='width:20%;height:15px;text-align:center;'></td><td style='width:20%;text-align:center;'></td><td style='width:20%;text-align:center;'></td><td style='width:20%;text-align:center;'></td><td style='width:20%;text-align:center;'></td></tr>";
+                txt += "</table>";
+                
+                
+                var i;
+                for(i = 0; i < 24; i++){
+                    
+                    //******************** add time **********************/
+                    
+                    // ###################################################    main div
+                    txt += "<div>";
+                    txt += "<table  frame=above  bordercolor=#DODODO id='Table_"+i+"'  cellpadding='5' cellspacing='1' style=';width:100%;text-align:center;background-color:white;'>";
+                    
+                       var now = new Date(),
+                                    offset = now.getTimezoneOffset() * 60 * 1000,
+                                yourUnixStamp = jansofile.hourly.data[i].time - offset;   
+                    
+                    
+                    
+                   // var timestamp = jansofile.hourly.data[i].time;
+                    var date = new Date(yourUnixStamp*1000);                  
+                    var hours = date.getHours();
+                    var minutes = date.getMinutes();
+                    if(minutes < 10){
+                            minutes = "0"+minutes;
+                    }
+                    if(hours >= 12){                               
+                        hours -= 12;
+
+                        if(hours < 10){
+                            hours = "0"+hours;
+                        }
+
+                        txt += "<tr><td style='width:20%;float:none;'>" + hours +":"+ minutes + "PM</td>";
+                    }else{
+                        if(hours < 10){
+                            hours = "0"+hours;
+                          }
+                        txt += "<tr><td style='width:20%;float:none;'>" + hours +":"+ minutes + "AM</td>";                             
+                    }
+                    //******************** add time end **********************/
+
+                    //******************** add icon **********************/
+                    if(jansofile.hourly.data[i].icon == "clear-day"){
+                        txt += "<td style='width:20%;'><image style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/clear.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon == "clear-night"){
+                        txt += "<td style='width:20%;'><image  style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/clear_night.png'/></td>";
+
+                    }else if(jansofile.hourly.data[i].icon== "rain"){
+                        txt += "<td style='width:20%;'><image  style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/rain.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon== "snow"){
+                        txt += "<td style='width:20%;'><image  style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/snow.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon == "sleet"){
+                        txt += "<td style='width:20%;'><image  style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/sleet.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon == "wind"){
+                        txt += "<td style='width:20%;'><image style='width:100px;height:100px;padding: 20px;'  src='http://cs-server.usc.edu:45678/hw/hw8/images/wind.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon == "fog"){
+                        txt += "<td style='width:20%;'><image style='width:100px;height:100px;padding: 20px;'  src='http://cs-server.usc.edu:45678/hw/hw8/images/fog.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon == "cloudy"){
+                        txt += "<td style='width:20%;'><image  style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloudy.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon == "partly-cloudy-day"){
+                        txt += "<td style='width:20%;'><image  style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloud_day.png'/></td>";
+                    }else if(jansofile.hourly.data[i].icon == "partly-cloudy-night"){
+                        txt += "<td style='width:20%;'><image  style='width:100px;height:100px;padding: 20px;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png'/></td>";
+                    }
+                    
+                    
+                    //******************** add icon end**********************/
+                    
+                     //******************** add cloud cover **********************/
+                    var cloudcover = jansofile.hourly.data[i].cloudCover;
+                    txt += "<td style='width:20%;'>"+Math.round(cloudcover)+"%</td>"
+                     //******************** add cloud cover **********************/
+                    
+                    
+                    //******************** add temp  **********************/
+                    var temp = jansofile.hourly.data[i].temperature;
+                   
+                    txt += "<td style='width:20%;'>"+temp.toFixed(2)+"</td>";
+                    
+                    //******************** add temp end**********************/
+                    
+                    //********************  +++++ **********************/
+                    
+
+                    //********************  ++++ end **********************/
+
+                    
+                    txt += "<td style='width:20%;'><a data-toggle='collapse' href='#demo"+i+"'><span class='glyphicon glyphicon-plus'></span> </a></td>";
+                    txt += "</table>"
+                    txt += "</div>";
+                    
+                    
+                    txt += "<div id='demo"+i+"' class='collapse' style='background-color:Silver;margin:25;padding-top:5px'>";
+                    
+                    //*****************************************************  content *********************************
+
+                    //*****************************************************  div of unfold *********************************
+                    txt += "<div style='margin:35px;background-color:white;'>";
+                    txt += "<table cellpadding='5' cellspacing='1' style='font-weight:bold;width:100%;text-align:center;background-color:#DODODO;'>";
+                   // txt += "<div id='subclass"+i+"'  style='width:100%;'>";
+                    
+                    txt += "<tr><td style='width:20%;height: 35px;text-align:center;'>Wind</td><td style='width:20%;text-align:center;'>Humidity</td><td style='width:20%;text-align:center;'>Visibility</td><td style='width:20%;text-align:center;'>Pressure</td></tr>";
+                    txt += "</table>";
+                    txt += "</div>";
+                   
+                            /*txt += "<div style='width:25%;float:left;'>Wind</div><div style='width:25%;float:left;'>Humidity</div><div style='width:25%;float:left;'>Visibility</div><div style='width:25%;float:left;'>Pressure</div>";*/
+                    
+                    //wind speed
+                    var windspeed = Math.round(jansofile.hourly.data[i].windSpeed);
+                    //humidity
+                    var humidity = Math.round(100*jansofile.hourly.data[i].humidity);
+                    
+                    var visibility =jansofile.hourly.data[i].visibility;
+                    
+                    var pressure = jansofile.hourly.data[i].pressure;
+                    
+                    txt += "<div style='margin-left:35px;margin-right:35px;background-color:#DODODO;'>";
+                    txt += "<table  cellpadding='5' cellspacing='1' style='width:100%;text-align:center;'>";
+
+                    
+                    if($('input:radio[name="degree"]:checked').val() == "si"){
+
+                       
+                        txt += "<tr><td style='width:25%;height: 35px;text-align:center;'>"+windspeed+" m/s</td><td style='width:25%;text-align:center;'>"+humidity+"%</td><td style='width:25%;text-align:center;'>"+visibility.toFixed(2)+" km</td><td style='width:25%;text-align:center;'>"+pressure.toFixed(1)+" hPa</td></tr>";
+                        
+                }else{                   
+
+                    txt += "<tr><td style='width:25%;height: 35px;text-align:center;'>"+windspeed+" mph</td><td style='width:25%;text-align:center;'>"+humidity+"%</td><td style='width:25%;text-align:center;'>"+visibility.toFixed(2)+" mi</td><td style='width:25%;text-align:center;'>"+pressure.toFixed(1)+" mb</td></tr>";
+                }
+                    txt += "</table>";
+                   txt += "</div>";
+
+                    txt += "</div>";
+
+                }
+                
+                txt += "</div>";
+                
+                return txt;
+            }
+
+            
+            function ThirdTxt(jansofile){
+                var txt="";
+                    txt="<div  style='text-align:center;'>";
+                    var x;
+                txt += "<div class = 'col-xs-12 col-sm-1 col-md-1' style='float:left;padding-left:3px;padding-right:3px;margin: 0 auto;'></div>";
+                txt += "<div class = 'col-xs-12 col-sm-1 col-md-1' style='float:left;padding-left:3px;padding-right:3px;margin: 0 auto;'></div>";
+                    
+                
+                    for (x=1;x<=7;x++){
+                        txt += "<div id='third"+x+"' class = 'col-xs-12 col-sm-1 col-md-1' style='float:left;padding-left:3px;padding-right:3px;margin: 0 auto;'>";
+                        
+                        txt += "  <button id='trdbtn"+x+"' type='button' class='btn btn-primary' data-toggle='modal' data-target='#theText"+x+"' style='width:100%;padding-left:0px;padding-right:0px;margin-top:15px;margin-bottom:15px'>";
+                        //class='btn btn-info btn-lg'
+                            
+                            txt +=  "<table id='Table_third' border='0' cellpadding='5' cellspacing='1' style='text-align:center;width:100%'>";
+                                
+                                var newdate = new Date(1000*jansofile.daily.data[x].time); 
+                                var week = newdate.getDay();
+                                if(week == 1){
+                                    week = "Monday";
+                                }else if (week == 2){
+                                    week = "Tuseday";
+                                }else if (week == 3){
+                                    week = "Wednesday";
+                                }else if (week == 4){
+                                    week = "Thursay";
+                                }else if (week == 5){
+                                    week = "Friday";
+                                }else if (week == 6){
+                                    week = "Saturday";
+                                }else if (week == 0){
+                                    week = "Sunday";
+                                }
+
+                                var month =newdate.getMonth();
+                                if(month == 0){
+                                    month = "Jan";
+                                }else if (month == 1){
+                                    month = "Feb";
+                                }else if (month == 2){
+                                    month = "Mar";
+                                }else if (month == 3){
+                                    month = "Apr";
+                                }else if (month == 4){
+                                    month = "May";
+                                }else if (month == 5){
+                                    month = "Jun";
+                                }else if (month == 6){
+                                    month = "Jul";
+                                }else if (month == 7){
+                                    month = "Aug";
+                                }else if (month == 8){
+                                    month = "Sep";
+                                }else if (month == 9){
+                                    month = "Oct";
+                                }else if (month == 10){
+                                    month = "Nov";
+                                }else if (month == 11){
+                                    month = "Dec";
+                                }
+                        
+                                
+                                var day = newdate.getDate();
+                        
+                        
+                                txt += "<tr><td><h5 style='font-size:10px; font-weight:bold;'>"+week+"</h5></td></tr>";
+                                txt += "<tr><td><h5 style='font-size:10px; font-weight:bold;'>"+month+" "+day+"</h5></td></tr>";
+                        
+                                var img_http;
+                                
+                                if(jansofile.daily.data[x].icon == "clear-day"){
+                                txt += "<tr><td><image style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/clear.png'/></td></tr>";
+                                  img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/clear.png";
+                            }else if(jansofile.daily.data[x].icon == "clear-night"){
+                                txt += "<tr><td><image src='http://cs-server.usc.edu:45678/hw/hw8/images/clear_night.png'/></td></tr>";
+                                    img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/clear_night.png";
+                                
+                            }else if(jansofile.daily.data[x].icon== "rain"){
+                                txt += "<tr><td><image style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/rain.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/rain.png";
+                                
+                            }else if(jansofile.daily.data[x].icon== "snow"){
+                                txt += "<tr><td><image  style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/snow.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/snow.png";
+                                
+                            }else if(jansofile.daily.data[x].icon == "sleet"){
+                                txt += "<tr><td><image  style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/sleet.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/sleet.png";
+                                
+                            }else if(jansofile.daily.data[x].icon == "wind"){
+                                txt += "<tr><td><image  style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/wind.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/wind.png";
+                                
+                            }else if(jansofile.daily.data[x].icon == "fog"){
+                                txt += "<tr><td><image  style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/fog.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/fog.png";
+                                
+                            }else if(jansofile.daily.data[x].icon == "cloudy"){
+                                txt += "<tr><td><image  style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloudy.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/cloudy.png";
+                                
+                            }else if(jansofile.daily.data[x].icon == "partly-cloudy-day"){
+                                txt += "<tr><td><image  style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloud_day.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/cloud_day.png";
+                                
+                            }else if(jansofile.daily.data[x].icon == "partly-cloudy-night"){
+                                txt += "<tr><td><image  style='width:50px;height:50;' src='http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png'/></td></tr>";
+                                img_http = "http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png";
+                                
+                            }
+                        
+                            var min = Math.round(jansofile.daily.data[x].temperatureMin);
+                            var max = Math.round(jansofile.daily.data[x].temperatureMax);
+                        
+                            txt += "<tr><td><p>Min</p><p>Temp</p></td></tr>";
+                            txt += "<tr><td><p style='font-size:25px; font-weight:bold;'>"+min+"&#176</p></td></tr>";
+                        
+                            txt += "<tr><td><p>Man</p><p>Temp</p></td></tr>";
+                            txt += "<tr><td><p style='font-size:25px; font-weight:bold;'>"+max+"&#176</p></td></tr>";
+                        
+                            txt += "</table>";
+                           // txt += "<a  style='display:block;width:100%;height:100%;' data-toggle='modal' data-target='#myModal'></a>";
+                        
+                        txt += "</button>";
+                        txt += "</div>";
+                        
+
+                                 txt += "<div  id='theText"+x+"' class='modal fade' role='dialog'>";
+                                       txt += "<div style='background:white;border-radius:5px;height:none;' class='modal-dialog' style='height:auto;'>";
+                                            txt += "<div class='modalcontent' style='height:auto;'>";
+                                                txt += "<div class='modal-header'>";
+                                                    txt += "<button type='button' class='close' data-dismiss='modal'>&times;</button>"; 
+                                              
+                                            //heade
+                                                    txt += "<h3 class='modal-title' style='color:black;'>Weather in "+document.getElementById("choose_city").value+" on "+month+" "+day+"</h3>";
+                                                txt += "</div>";
+                                                    txt += "<div class='modal-body' >"; //style='height:450px;'//////
+                        
+                        //**************************body***************************
+                                                        txt += "<div style='width:100%;text-align:center;'>";
+                                                            txt += "<image src='"+img_http+"' style='width: 100px; height: 100px;'/>";
+                                            
+                                                        txt += "</div>";
+                                                        txt += "<div style='width:100%;'>";
+                                                            var summary = jansofile.daily.data[x].summary;
+                                        //txt += "<ul style='list-style: none;'><li style='color:black;font-size:25px;'>"+week+":</li><li style='float:left;color:#FF7F00;>"+summary+"</li></ul>"; //<li style='color:#FF7F00;>"+summary+"</li>
+                                                           // txt += "<h2 style='float:left;'>"+week+":</h2><h2 style='float:left;color:#FF7F00;'>"+summary+"</h2>";
+                                                            txt += "<h3>"+week+":<font style='color:#FF7F00;'>"+summary+"</font></h3>";
+                                                        txt += "</div>";
+                        
+                      //************************************ weather ********************************  
+                        
+                                                //sun rise time 
+                                        txt += "<div style='color:black;'>";
+                                            var sunriseTime = jansofile.daily.data[x].sunriseTime;
+                                            var sun_riseTime = new Date(sunriseTime*1000);                  
+                                            var hours_rise = sun_riseTime.getHours();
+                                            var minutes_rise = sun_riseTime.getMinutes();
+                                            if(minutes_rise < 10){
+                                                    minutes_rise = "0"+minutes_rise;
+                                            }
+                                            if(hours_rise >= 12){                               
+                                                hours_rise -= 12;
+
+                                                if(hours_rise < 10){
+                                                    hours_rise = "0"+hours_rise;
+                                                }
+                                                            
+                                                        txt += "<div class = 'col-xs-12 col-sm-4 col-md-4' style='text-align:center;'>";
+                                                txt += "<h4>Sunrise Time</h4>";
+                                                txt += "<h5>"+hours_rise +":"+ minutes_rise+"PM</h5>";
+                                                        txt += "</div>";
+
+                                                
+                                            }else{
+                                                if(hours_rise < 10){
+                                                    hours_rise = "0"+hours_rise;
+                                                  }
+                                                txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                txt += "<h4>Sunrise Time</h4>";
+                                                txt += "<h5>"+hours_rise +":"+ minutes_rise+"AM</h5>";
+                                                        txt += "</div>";                             
+                                            }
+                        
+                                            var sunsetTime = jansofile.daily.data[x].sunsetTime;
+                                            var sun_setTime = new Date(sunsetTime*1000);                  
+                                            var hours_set = sun_setTime.getHours();
+                                            var minutes_set = sun_setTime.getMinutes();
+                                            if(minutes_set < 10){
+                                                    minutes_set = "0"+minutes_set;
+                                            }
+                                            if(hours_set >= 12){                               
+                                                hours_set -= 12;
+
+                                                if(hours_set < 10){
+                                                    hours_set = "0"+hours_set;
+                                                }
+                                                            
+                                                        txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                txt += "<h4>Sunrise Time</h4>";
+                                                txt += "<h5>"+hours_set +":"+ minutes_set+" PM</h5>";
+                                                        txt += "</div>";
+
+                                                
+                                            }else{
+                                                if(hours_set < 10){
+                                                    hours_set = "0"+hours_set;
+                                                  }
+                                                txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                txt += "<h4>Sunset Time</h4>";
+                                                txt += "<h5>"+hours_set +":"+ minutes_set+" AM</h5>";
+                                                        txt += "</div>";                             
+                                            }
+
+                        
+                                                 var windspeed = Math.round(jansofile.daily.data[x].windSpeed);
+                                                //humidity
+                                                    var humidity = Math.round(100*jansofile.daily.data[x].humidity);
+
+                                                var visibility =jansofile.daily.data[x].visibility;
+
+                                                var pressure = jansofile.daily.data[x].pressure;
+
+                                                if($('input:radio[name="degree"]:checked').val() == "si"){
+ 
+                                            txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                            
+                                                txt += "<h4>Humidity</h4>";
+                                                txt += "<h5>"+humidity+"%</h5>";
+                                            txt += "</div>";
+                                            
+                                                    
+                                                    
+                                                    txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                    txt += "<h4>Wind Speed</h4>";
+                                                txt += "<h5>"+windspeed+" m/s</h5>";
+                                            
+                                            txt += "</div>";
+                                            
+                                                    
+                                                    txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                        txt += "<h4>Visibility</h4>";
+                                                txt += "<h5>"+visibility+" km</h5>";
+                                            txt += "</div>";
+                                            
+                                                    
+                                                    txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                    txt += "<h4>Presure</h4>";
+                                                txt += "<h5>"+pressure.toFixed(1)+" hPa</h5>";
+                                            txt += "</div>";
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                }else{                   
+
+                                                     txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                            
+                                                txt += "<h4>Humidity</h4>";
+                                                txt += "<h5>"+humidity+"%</h5>";
+                                            txt += "</div>";
+                                            
+                                                    
+                                                    
+                                                    txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                    txt += "<h4>Wind Speed</h4>";
+                                                txt += "<h5>"+windspeed+" mph</h5>";
+                                            
+                                            txt += "</div>";
+                                            
+                                                    
+                                                    txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                        txt += "<h4>Visibility</h4>";
+                                                txt += "<h5>"+visibility+" mi</h5>";
+                                            txt += "</div>";
+                                            
+                                                    
+                                                    txt += "<div style='text-align:center;' class = 'col-xs-12 col-sm-4 col-md-4'>";
+                                                    txt += "<h4>Presure</h4>";
+                                                txt += "<h5>"+pressure.toFixed(1)+" mb</h5>";
+                                            txt += "</div>";
+                                                    }
+                    
+                                            txt += "<div style='clear:both'></div>";
+                                            txt += "</div>";
+                        
+              
+                        
+                        //*********************************** weather ********************************
+                                        
+                                                    txt += "</div>";
+                                               txt += "<div class='modal-footer' style='height:60px;'>";
+                                             txt += "<button  type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>";
+                                            txt += "</div>";
+                                        txt += "</div>";
+                                txt += "</div>";
+                            
+                    }
+                    txt += "<div style='clear:both'></div>";
+                
+                    txt += "</div>";
+                return txt;
+            }
+            
+
+            
+// ************* get data from jason ************           
+            function print_json(jansofile){
+               
+              
+ 
+                var txt;
+
+                txt = "<ul id='allTabs' class='nav nav-tabs'>";
+                txt += "<li class='active'>";
+                txt += "<a  href='#first' data-toggle='tab'>Right Now</a></li>";
+                txt += "<li><a  href='#second' data-toggle='tab'>Next 24 Hours</a></li>";
+                txt += "<li><a href='#third' data-toggle='tab'>Next 7 Days</a></li>";
+                txt += "</ul>";
+                txt += "<div id='Content' class='tab-content'>";
+                //style='background-color:white;color:SteelBlue;'        class='nav nav-pills'
+                
+                // ******************   all in first table tag *******
+                
+                txt += "<div class='tab-pane fade in active' id='first'>"; 
+          
+                var first_txt = FirstTxt(jansofile);
+                txt += first_txt;
+           
+                txt += "</div>";
+                
+                txt += "<div class='tab-pane fade' id='second'>";                
+                var second_txt = SecondTxt(jansofile);
+                txt += second_txt;               
+                txt += "</div>";
+                
+                txt += "<div class='tab-pane fade' id='third' style='text-align:center;background-color:black;padding-top: 20px;height:100%;color:black;'>"; 
+                
+                var third_txt = ThirdTxt(jansofile);
+                txt += third_txt;               
+                txt += "</div>";
+                
+                txt += "</div>";
+                
+                
+                
+                
+       //         txt ="xxxxxxxxxxxxxxxxxxxxxxx";
+                
+                return txt;
+            }
+                        
+            
+            function SetTableColor(){   
+                $("#Table_1 tr:odd").css("background-color","#ff95ca");  
+                $("#Table_1 tr:even").css("background-color", "white");  
+               
+            } 
+            
+
+     
+        </script>
+
+        <style>
+            .nav-tabs[selected]{
+                    background-color: steelblue !important;
+               
+                    color:white;
+            }
+
+            .nav-tabs > li > a{
+               
+                background-color: white;
+               
+                color:steelblue;
+            }
+            .nav-tabs > li > a:hover{
+                background-color: steelblue;
+               
+                color:white;
+            }
+
+            
+            #allTabs li.active a{
+                background-color: steelblue;
+                color: white;}
+           
+
+
+
+            body{ 
+                font-size:12px;
+                background-image:url(http://cs-server.usc.edu:45678/hw/hw8/images/bg.jpg);
+                background-repeat: no-repeat;
+                
+                /*background-repeat:no-repeat; 
+                
+                background-attachment: fixed;*/
+                background-size:cover;
+                background-attachment:fixed; 
+                background-position: center 0; 
+ 
+
+
+                -webkit-background-size: cover;
+                margin: 0 auto;
+                
+                
+            }
+            
+            #title {
+                position:relative;
+                left:50%;
+                margin-left:-500px;
+                color:black;
+                width:1000px;
+                font-size:30px;
+                text-align:center;
+                color:white;
+            }
+            
+            #mainbody{
+                position:relative;
+                           
+                background:rgba(0, 0, 0, 0.2)!important;
+
+                border-radius: 5px;
+             
+
+                border-bottom: 0px;
+                border-top: 0px;
+
+            }
+            
+            #map {
+                
+                border: 2px solid white;
+            }
+            #btn_f {
+                width : 50px;
+                
+                height : 50px;   
+            
+                background:url('http://cs-server.usc.edu:45678/hw/hw8/images/fb_icon.png');
+                background-size:100% 100%;
+                border: none;
+            }
+            
+                    
+            #street{
+                /* position:relative;*/
+                /*left:20px;*/
+                margin-left:10px;
+                padding-left: 0px;
+                padding-right: 0px;
+                padding-top: 20px;
+                float:left;
+                border-radius:5px;
+                outline:none;
+            }
+            
+            #city{
+                /* position:relative;*/
+                /*left:140px;*/
+                margin-left:10px;
+                padding-left: 0px;
+                padding-right: 0px;
+                padding-top: 20px;
+                float:left;
+                border-radius:5px;
+                outline:none;
+            
+            }
+            
+            #state{
+                /* position:relative;*/
+                /*left:260px;*/
+                margin-left:10px;
+                padding-left: 0px;
+                padding-right: 0px;
+                padding-top: 20px;
+                float:left;
+               
+               
+            }
+            
+            #degree{
+                position:relative;
+                /*left:260px;*/
+                margin-left:10px;
+                padding-left: 0px;
+                padding-right: 0px;
+                padding-top: 20px;
+                
+                float:left;
+                color:white;
+            
+            }
+            
+            .button{
+                position:relative;
+                /*left:260px;*/
+                margin-right:0px;
+                width:150;
+                padding-top:40px;
+                float:right;
+            }
+            
+            #choose_address{
+                border-radius:5px;
+                border: 0;  
+                height:20px;
+                
+                padding: 3px 5px; 
+                font-size: 85%; 
+        
+                
+            }
+            
+            #choose_city, #choose_state{
+                border-radius:5px;
+                
+                height:20px;                
+                border: 0;    
+                padding: 3px 5px; 
+                font-size: 85%;                
+            }
+            
+             li {
+                 list-style-type:none;
+                 float:left;
+             }
+            
+            #btn1, #btn2{
+                font-size:10px;
+                height:25px; 
+                width:65px;
+                padding-left: 5px; 
+                padding-right: 5px; 
+                
+            }
+            
+            #trdbtn1 {
+                background-color: steelblue;
+                border: none;
+                 
+                border-radius:15px;
+            }
+            
+            #trdbtn2 {
+                background-color: red;
+                border: none;
+                border-radius:15px;
+                
+            }
+            #trdbtn3 {
+                background-color: orangered;
+                border: none;
+                border-radius:15px;
+            }
+            #trdbtn4 {
+                background-color: green;
+                border: none;
+                border-radius:15px;
+            }
+            #trdbtn5 {
+                background-color: mediumpurple;
+                border: none;
+                border-radius:15px;
+            }
+            #trdbtn6 {
+                background-color: lightpink;
+                border: none;
+                border-radius:15px;
+            }
+            #trdbtn7 {
+                background-color: rebeccapurple;
+                border: none;
+                border-radius:15px;
+            }
+            
+            #third1,#third2,#third3,#third4,#third5,#third6,#third7 {
+               position: relative;  
+                display: inline-block;
+            }
+            
+            
+            
+           .pi {
+                
+                padding-left: 7%; 
+                padding-right: 7%; 
+            }
+            
+            .outsideBody {
+                
+                width = 100%;
+            }
+            
+            #lastpart {
+                
+                padding-left: 7%; 
+                padding-right: 7%; 
+            }
+            
+             .whiteline{
+               /* position:relative;*/
+                height:30px;
+                  
+                position:static;
+                float:none;
+                clear:both;
+                padding-top: 1%;
+                padding-left: 7%; 
+                padding-right: 7%; 
+            }
+
+        </style>
+    
+        
+    
+    </head>
+    <body>
+        <iframe name="formsubmit" style="display:none;"></iframe>
+        
+        <div class ="outsideBody">
+        <div class = "pi">
+            <p id = "title" style="color:black;">Forecast Search</p>
+            <div id = "mainbody" class="col-xs-12 col-sm-12 col-md-12">
+                <form  id = "formid" action=""  name="form" target="formsubmit">
+                <!--onsubmit="return send_data_to_AWS();"-->
+<!-- ***************** street div ******************* -->
+            <div id = "street" class =  "col-xs-10 col-sm-3 col-md-3">
+                <li style="color:white;">Street Address:</li><li style="color:red;">*</li>
+                <input class="form-control" id="choose_address" type="text" name = "street" value="" placeholder="Enter street address"/> <p />
+                <p style="color:red;" id="streetwarning"></p>
+            </div>
+                
+                
+<!-- ***************** city div ******************* -->
+            
+            <div id = "city" class =  "col-xs-10 col-sm-2 col-md-2">
+                <li style="color:white;">City:</li><li style="color:red;">*</li>&nbsp;&nbsp;
+        
+                <p><input class="form-control" id="choose_city" type="text" name="city"  value="" placeholder="Enter the city name"/> </p> 
+                <p style="color:red;" id="citywarning"></p>
+            </div>
+     
+<!-- ***************** state div ******************* -->
+                
+            <div id = "state" class = "col-xs-10 col-sm-2 col-md-2">
+                <li style="color:white;">State:</li><li style="color:red;">*</li> 
+                    
+                <select class="form-control" id='choose_state' size='1' name='state' style="color:black;" >
+                    <option value='' disabled selected>Select your state...</option>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value='CO'>Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="DC">District Of Columbia</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="NV">Nevada</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
+                    </select>  
+                <p style="color:red;margin-top:11px;" id="statewarning"></p>
+                
+            </div>
+                
+<!-- ***************** degree div ******************* -->
+            <div id = "degree" class="col-xs-10 col-sm-2 col-md-2">
+                <div style="padding-left: 0px;  margin-top: 0px;">
+                    <lable><li style="color:white;">Degree:</li><li style="color:red;">*</li></lable>
+                </div>
+                <p></p>
+                <div style="position:relative; padding-top: 8px;"  >
+                    <input  id='temperature1' type='radio' name='degree' value='us' checked='checked' style="color:white;"/>&nbsp;Fahrenhit
+                    <input id='temperature2'  type='radio' name='degree' value='si' style="color:white;"/>&nbsp;Celsius
+                </div>
+            </div>
+                
+<!-- ***************** button div ******************* -->                
+            <div class="button">
+                <button id = "btn1" type="submit" class="btn btn-primary" ><span class="glyphicon glyphicon-search"></span>&nbsp;Search</button>
+                <button id = "btn2" type="button" class="btn btn-default" onclick="cleanAll()" style="color:black"><span class="glyphicon glyphicon-refresh" ></span>&nbsp;Clear</button>
+                
+                
+                
+                <p style="color:white;">Prowered by:
+                    <a href="http://forecast.io/">
+                        <img src="http://cs-server.usc.edu:45678/hw/hw8/images/forecast_logo.png" width="60" height="50" />
+                    </a>
+                    
+                </p>
+            </div>
+        
+        
+        </form>
+        </div>
+            
+        </div>
+            
+            <div class="whiteline">
+                <hr noshade color=white>
+            </div>
+            
+            <div id="lastpart" class = "col-xs-12 col-sm-12 col-md-12 " style="top: 50px;">
+            <p></p>
+        </div>
+   <!-- ---------------------------------------- -->   
+
+            
+ <!--  ---------------------------------  -->       
+        </div>
+
+        <noscript> 
+    
+    </body>
+
+
+</html>

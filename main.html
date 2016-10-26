@@ -1,0 +1,156 @@
+<html>
+<head>
+<script type="text/javascript">
+
+var xmlDoc;
+
+function loadXML(url)
+{
+/*xmlhttp=null;*/
+if (window.XMLHttpRequest)
+ {
+ // code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+ }
+ else
+ {
+ // code for IE6, IE5
+     
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ }
+    
+    
+        xmlhttp.open("GET",url,false);
+        xmlhttp.send(null);
+    
+   
+    
+    if(xmlhttp.status==200){
+        
+        xmlDoc = xmlhttp.responseXML;
+        return xmlDoc;
+        
+    }
+    else if(xmlhttp.status==404){
+        /*document.write(xmlhttp.status);*/
+        alert("No Such File");
+        return;
+    }
+    else{
+        alert("Other Error Happened");
+        return;
+    }
+    
+   /* if(xmlhttp.readyState==4){   
+        if(xmlhttp.status==200){
+            
+        } 
+        
+        else if(xmlhttp.status==404){
+            xmlDoc = null;
+        }
+    }*/  
+}
+    
+    
+    function test(){
+       var url = document.getElementById("HTTP").value;              
+        xmlDoc = loadXML(url);
+        
+    
+    if (xmlDoc.documentElement.nodeName=="parsererror")
+      {
+      alert("Error in XML file");
+          return;
+    
+      }else{
+          str=xmlhttp.responseXML.documentElement.getElementsByTagName("Table");
+          data=str[0].getElementsByTagName("Row");
+          
+          if(data.length == 0){
+            alert("No Content in this File");
+          }else{
+            myWindow=window.open('open.html', 'newwindow', 'height=no, width=1100, top=50, left=0, toolbar=no, menubar=yes,           scrollbars=yes, resizable=yes, location=no, status=no');
+        DoSomething();
+          }
+          
+        
+          
+          
+        
+      }
+          
+       
+    }
+
+
+function DoSomething()
+{
+    myWindow.document.write("<table border='1' width=90%>");
+    str=xmlhttp.responseXML.documentElement.getElementsByTagName("Header");
+    data=str[0].getElementsByTagName("Data");
+     myWindow.document.write("<tr>");
+    for (i=0;i<data.length;i++)
+    {
+        
+        myWindow.document.write("<td >" + data[i].firstChild.nodeValue + "</td>");
+              
+    }
+     myWindow.document.write("<tr>");
+    x=xmlhttp.responseXML.documentElement.getElementsByTagName("Row");
+    
+    for(i=0;i<x.length;i++){
+        	myWindow.document.write("<tr>");
+  
+        data=x[i].getElementsByTagName("Network");
+
+        
+        myWindow.document.write( "<td>" + data[0].firstChild.nodeValue + "</td>");
+        data=x[i].getElementsByTagName("Owner");
+        myWindow.document.write( "<td>" + data[0].firstChild.nodeValue + "</td>");
+        
+        data=x[i].getElementsByTagName("Feeds");
+        myWindow.document.write("<td>"); 
+        xx=data[0].getElementsByTagName("Feed");
+        
+        
+        for (j=0;j<xx.length;j++){
+        myWindow.document.write("<li>"+xx[j].firstChild.nodeValue+"</li>");        
+        }     
+        myWindow.document.write("</td>");
+        
+        data=x[i].getElementsByTagName("Notes");
+        myWindow.document.write( "<td>" + data[0].firstChild.nodeValue + "</td>");
+        data=x[i].getElementsByTagName("HomePage");
+        myWindow.document.write( "<td>" + '<a href="'+data[0].firstChild.nodeValue+'">' +data[0].firstChild.nodeValue+ "</a></td>");
+        data=x[i].getElementsByTagName("Logo");
+        myWindow.document.write( "<td>" + '<img src="'+data[0].firstChild.nodeValue+'">' + "</td>");
+       
+        
+    }
+    
+
+myWindow.document.write("</table>");
+}
+
+        
+</script>
+</head>
+    
+<body>
+
+    
+    <div id="container" style="position:relative;left:50%;margin-left:-100px">
+    <p>Enter URL for Company List XML File</p> 
+    <p style="margin-left:50px"><input id="HTTP" /></p>
+    <button style="margin-left:75px" onclick="test()">Submit Query</button>
+    
+    </div>
+    
+
+
+    
+<noscript>   
+    
+</body>    
+</html>
